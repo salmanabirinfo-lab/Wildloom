@@ -1,0 +1,480 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Wildloom</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,500;0,6..72,600;1,6..72,500&family=Hanken+Grotesk:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: cream storefront echoing the logo disc; olive as the single brand colour; serif wordmark, grotesk body; cart is a side drawer */
+:root{
+  --bg:#F5EEDC; --surface:#FBF7EC; --fg:#2B2F1E; --muted:#6C6F58; --line:#DDD3B8;
+  --accent:#4F5A33; --accent-fg:#F8F3E4; --accent-soft:#E4E3C6; --sale:#9A4A2E;
+  --font-display:'Newsreader',Georgia,'Times New Roman',serif;
+  --font-body:'Hanken Grotesk',system-ui,-apple-system,'Segoe UI',sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#1C2015; --surface:#252A1C; --fg:#F1EAD6; --muted:#A9AB92; --line:#3A4029;
+  --accent:#B5C27E; --accent-fg:#1C2015; --accent-soft:#33391F; --sale:#E39A78; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#1C2015; --surface:#252A1C; --fg:#F1EAD6; --muted:#A9AB92; --line:#3A4029;
+  --accent:#B5C27E; --accent-fg:#1C2015; --accent-soft:#33391F; --sale:#E39A78; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.55;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:60;background:var(--bg)}
+h1,h2,h3{font-family:var(--font-display);font-weight:600;line-height:1.1;margin:0;text-wrap:balance;letter-spacing:-.01em}
+a{color:inherit}
+button,select,input,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.wrap{max-width:1120px;margin:0 auto}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;border:1.5px solid var(--accent);background:var(--accent);color:var(--accent-fg);
+  padding:.7rem 1.2rem;border-radius:999px;font-weight:600;cursor:pointer;text-decoration:none;font-size:.95rem}
+.btn.ghost{background:transparent;color:var(--fg);border-color:var(--line)}
+.btn.ghost:hover{border-color:var(--accent)}
+.btn[disabled]{opacity:.5;cursor:not-allowed}
+
+/* header */
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:50;background:var(--bg);border-bottom:1px solid var(--line);
+  margin-left:calc(-1*max(16px,env(safe-area-inset-left,0px)));margin-right:calc(-1*max(16px,env(safe-area-inset-right,0px)));
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.bar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:12px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none}
+.brand svg{width:38px;height:38px;flex:none}
+.brand span{font-family:var(--font-display);font-size:1.45rem;font-weight:600;letter-spacing:.04em}
+nav.links{display:flex;gap:22px;font-size:.93rem;font-weight:500}
+nav.links a{text-decoration:none;color:var(--muted)}
+nav.links a:hover{color:var(--fg)}
+.cartbtn{position:relative;border:1.5px solid var(--line);background:var(--surface);border-radius:999px;padding:.5rem .95rem;cursor:pointer;font-weight:600;display:flex;gap:.5rem;align-items:center}
+.cartbtn b{background:var(--accent);color:var(--accent-fg);border-radius:999px;min-width:1.4rem;height:1.4rem;display:inline-grid;place-items:center;font-size:.78rem;padding:0 .35rem}
+@media(max-width:640px){nav.links{display:none}}
+
+/* hero */
+.hero{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center;padding-block:56px 48px}
+.eyebrow{font-size:.8rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:600;margin:0 0 14px}
+.hero h1{font-size:clamp(2.4rem,6vw,4.3rem)}
+.hero h1 em{font-style:italic;color:var(--accent)}
+.hero p.lead{font-size:1.1rem;color:var(--muted);max-width:46ch;margin:18px 0 26px}
+.hero .cta{display:flex;flex-wrap:wrap;gap:12px}
+.hero-art{background:var(--accent-soft);border-radius:28px;aspect-ratio:1/1;max-width:100%;display:grid;place-items:center;position:relative;overflow:hidden}
+.hero-art svg{width:78%;height:auto;max-width:100%}
+.hero-art .tag{position:absolute;left:18px;bottom:18px;background:var(--bg);border-radius:999px;padding:.4rem .9rem;font-size:.85rem;font-weight:600}
+@media(max-width:820px){.hero{grid-template-columns:1fr;padding-block:36px}.hero-art{max-width:420px}}
+
+/* trust strip */
+.strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px;padding-block:22px;border-block:1px solid var(--line)}
+.strip div{display:flex;gap:12px;align-items:flex-start}
+.strip svg{width:26px;height:26px;flex:none;color:var(--accent)}
+.strip strong{display:block;font-size:.97rem}
+.strip span{color:var(--muted);font-size:.88rem}
+
+/* shop */
+section{padding-block:56px}
+.sec-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:16px;margin-bottom:26px}
+.sec-head h2{font-size:clamp(1.8rem,4vw,2.6rem)}
+.sec-head p{color:var(--muted);margin:8px 0 0;max-width:50ch}
+.tools{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.chip{border:1.5px solid var(--line);background:transparent;border-radius:999px;padding:.45rem 1rem;cursor:pointer;font-weight:500;font-size:.92rem}
+.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-fg)}
+select.sort{border:1.5px solid var(--line);background:var(--surface);border-radius:999px;padding:.45rem .9rem}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:22px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:20px;overflow:hidden;display:flex;flex-direction:column;min-width:0}
+.card .art{background:var(--accent-soft);aspect-ratio:1/1.05;display:grid;place-items:center;position:relative}
+.card .art svg{width:74%;height:auto}
+.badge{position:absolute;top:12px;left:12px;background:var(--bg);border-radius:999px;padding:.2rem .65rem;font-size:.76rem;font-weight:700;letter-spacing:.04em}
+.badge.sale{background:var(--sale);color:#fff}
+.card .body{padding:16px;display:flex;flex-direction:column;gap:8px;flex:1}
+.card h3{font-size:1.2rem}
+.card .desc{color:var(--muted);font-size:.88rem;margin:0}
+.price{display:flex;gap:8px;align-items:baseline;font-weight:700}
+.price s{color:var(--muted);font-weight:400;font-size:.88rem}
+.buy{display:flex;gap:8px;margin-top:auto;padding-top:8px}
+.buy select{border:1.5px solid var(--line);background:var(--bg);border-radius:12px;padding:.5rem .6rem;min-width:0}
+.buy .btn{flex:1;padding:.55rem .8rem}
+.empty{color:var(--muted);padding:40px 0;text-align:center}
+
+/* winter feature */
+.winter{background:var(--accent);color:var(--accent-fg);border-radius:28px;padding:clamp(28px,5vw,56px);display:grid;grid-template-columns:1.2fr 1fr;gap:30px;align-items:center}
+.winter h2{font-size:clamp(2rem,5vw,3.2rem)}
+.winter p{max-width:46ch;opacity:.92}
+.winter .btn{background:var(--accent-fg);color:var(--accent);border-color:var(--accent-fg)}
+.winter ul{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.winter li{border:1px solid color-mix(in srgb,var(--accent-fg) 35%,transparent);border-radius:14px;padding:.8rem 1rem;display:flex;justify-content:space-between;gap:10px}
+@media(max-width:820px){.winter{grid-template-columns:1fr}}
+
+/* steps */
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px;list-style:none;margin:0;padding:0;counter-reset:s}
+.steps li{counter-increment:s;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:20px}
+.steps li::before{content:counter(s);font-family:var(--font-display);font-size:1.9rem;color:var(--accent);display:block;line-height:1;margin-bottom:10px}
+.steps strong{display:block;margin-bottom:4px}
+.steps span{color:var(--muted);font-size:.92rem}
+
+/* about + contact */
+.two{display:grid;grid-template-columns:1fr 1fr;gap:36px}
+@media(max-width:820px){.two{grid-template-columns:1fr}}
+.contact{background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:26px;display:grid;gap:14px}
+.contact .row{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);padding-bottom:12px}
+.contact .row:last-child{border:0;padding:0}
+.contact .k{color:var(--muted);font-size:.85rem}
+.contact .v{font-weight:600;overflow-wrap:anywhere}
+.mini{border:1.5px solid var(--line);background:transparent;border-radius:999px;padding:.25rem .8rem;font-size:.82rem;cursor:pointer}
+footer{border-top:1px solid var(--line);padding-block:28px 40px;color:var(--muted);font-size:.88rem;display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px}
+
+/* drawer */
+.scrim{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:70}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(440px,100%);background:var(--bg);z-index:80;display:flex;flex-direction:column;
+  padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) 0;box-shadow:-10px 0 40px rgba(0,0,0,.25)}
+.d-head{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;border-bottom:1px solid var(--line)}
+.d-head h3{font-size:1.5rem}
+.x{border:0;background:transparent;font-size:1.6rem;line-height:1;cursor:pointer;padding:.2rem .5rem}
+.d-body{flex:1;overflow:auto;padding:16px 20px}
+.d-foot{border-top:1px solid var(--line);padding:16px 20px;display:grid;gap:10px}
+.line{display:grid;grid-template-columns:64px 1fr auto;gap:12px;align-items:center;padding-block:10px;border-bottom:1px solid var(--line)}
+.line .th{background:var(--accent-soft);border-radius:12px;aspect-ratio:1;display:grid;place-items:center}
+.line .th svg{width:80%}
+.line small{color:var(--muted);display:block}
+.qty{display:inline-flex;align-items:center;border:1.5px solid var(--line);border-radius:999px;margin-top:6px}
+.qty button{border:0;background:transparent;width:30px;height:30px;cursor:pointer;font-size:1.05rem}
+.qty span{min-width:22px;text-align:center;font-weight:600}
+.sum{display:flex;justify-content:space-between;font-size:.95rem}
+.sum.total{font-weight:700;font-size:1.1rem}
+form .f{display:grid;gap:5px;margin-bottom:12px}
+form label{font-size:.85rem;font-weight:600}
+form input,form textarea,form select{border:1.5px solid var(--line);background:var(--surface);border-radius:12px;padding:.6rem .75rem;width:100%}
+form textarea{min-height:70px;resize:vertical}
+.pay{display:flex;gap:8px;flex-wrap:wrap}
+.pay label{display:flex;gap:6px;align-items:center;border:1.5px solid var(--line);border-radius:999px;padding:.4rem .8rem;font-weight:500;cursor:pointer}
+.pay input{width:auto}
+.note{background:var(--accent-soft);border-radius:14px;padding:12px 14px;font-size:.88rem}
+pre.order{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px;white-space:pre-wrap;overflow-wrap:anywhere;font:inherit;font-size:.88rem;margin:12px 0}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:.6rem 1.1rem;border-radius:999px;z-index:90;font-size:.9rem;font-weight:600;max-width:calc(100% - 32px)}
+@media(prefers-reduced-motion:no-preference){.card{transition:transform .2s}.card:hover{transform:translateY(-3px)}}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap bar">
+    <a class="brand" href="#top" aria-label="Wildloom home">
+      <svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="23" fill="var(--accent-soft)" stroke="var(--line)"/><g fill="none" stroke="var(--accent)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M24 12.5c0-2.2 3.4-2.6 3.4-5.2A3.4 3.4 0 0 0 20.6 7"/><path d="M24 13v3M10 28l14-12 14 12M17 25l7 8 7-8M24 33v5"/></g></svg>
+      <span>WILDLOOM</span>
+    </a>
+    <nav class="links" aria-label="Main">
+      <a href="#shop">Shop</a><a href="#winter">Winter</a><a href="#how">How to order</a><a href="#contact">Contact</a>
+    </nav>
+    <button class="cartbtn" id="openCart" aria-label="Open cart">Cart <b id="cartCount">0</b></button>
+  </div>
+</header>
+
+<main id="top" class="wrap">
+  <div class="hero">
+    <div>
+      <p class="eyebrow">Winter 2026 · Comilla, Bangladesh</p>
+      <h1>Good clothes at <em>honest</em> prices.</h1>
+      <p class="lead">Wildloom is an e-commerce clothing brand built on one idea: high-quality clothing for customers at the most affordable prices. Pick your size, send your order, we deliver.</p>
+      <div class="cta">
+        <a class="btn" href="#shop">Shop the collection</a>
+        <a class="btn ghost" href="#winter">Winter picks</a>
+      </div>
+    </div>
+    <div class="hero-art" id="heroArt"><span class="tag">New: winter jackets &amp; hoodies</span></div>
+  </div>
+
+  <div class="strip">
+    <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><p style="margin:0"><strong>Quality checked</strong><span>Every piece inspected before it ships.</span></p></div>
+    <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M14.5 9.2c-.6-.8-1.5-1.2-2.5-1.2-1.4 0-2.5.8-2.5 2s1 1.7 2.5 2 2.5.8 2.5 2-1.100 2-2.500 2c-1 0-1.900-.4-2.500-1.200M12 6.500v1.500M12 16v1.500"/></svg><p style="margin:0"><strong>Affordable by design</strong><span>Straight pricing, no inflated tags.</span></p></div>
+    <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7"/><circle cx="7" cy="17.500" r="1.500"/><circle cx="17" cy="17.500" r="1.500"/></svg><p style="margin:0"><strong>Delivery across Bangladesh</strong><span>Cash on delivery available.</span></p></div>
+  </div>
+
+  <section id="shop">
+    <div class="sec-head">
+      <div><h2>The collection</h2><p>Choose a size, add to cart, and send your order in a minute.</p></div>
+      <div class="tools" role="group" aria-label="Filter products">
+        <button class="chip" data-f="all" aria-pressed="true">All</button>
+        <button class="chip" data-f="winter" aria-pressed="false">Winter</button>
+        <button class="chip" data-f="men" aria-pressed="false">Men</button>
+        <button class="chip" data-f="women" aria-pressed="false">Women</button>
+        <select class="sort" id="sort" aria-label="Sort products">
+          <option value="featured">Featured</option><option value="low">Price: low to high</option><option value="high">Price: high to low</option>
+        </select>
+      </div>
+    </div>
+    <div class="grid" id="grid"></div>
+  </section>
+
+  <section id="winter" style="padding-top:8px">
+    <div class="winter">
+      <div>
+        <p class="eyebrow" style="color:inherit;opacity:.8">Winter collection</p>
+        <h2>Warm layers for the cold months.</h2>
+        <p style="margin:16px 0 24px">Hoodies, puffer jackets, sweaters and shawls, chosen to keep you warm without a heavy price tag.</p>
+        <button class="btn" id="seeWinter">Shop winter</button>
+      </div>
+      <ul id="winterList" aria-label="Winter highlights"></ul>
+    </div>
+  </section>
+
+  <section id="how">
+    <div class="sec-head"><div><h2>How to order</h2></div></div>
+    <ol class="steps">
+      <li><strong>Pick your pieces</strong><span>Choose a size and add each item to your cart.</span></li>
+      <li><strong>Fill in delivery details</strong><span>Name, phone, address and how you want to pay.</span></li>
+      <li><strong>Pay and send the order</strong><span>Pay by bKash, Nagad or cash on delivery, then send the order summary to Wildloom on Messenger.</span></li>
+      <li><strong>We confirm and deliver</strong><span>We check your payment, confirm the order, then ship to your door.</span></li>
+    </ol>
+  </section>
+
+  <section id="contact">
+    <div class="two">
+      <div>
+        <h2 style="font-size:clamp(1.8rem,4vw,2.6rem)">About Wildloom</h2>
+        <p style="color:var(--muted);margin-top:14px">Wildloom is an e-commerce company dedicated to offering high-quality clothing to customers at the most affordable prices. We are based in Comilla and serve customers across Bangladesh through our Facebook page and this website.</p>
+        <p style="color:var(--muted)">Questions about sizes, stock or delivery? Message us any time.</p>
+      </div>
+      <div class="contact">
+        <div class="row"><div><div class="k">Messenger</div><div class="v">Wildloom</div></div><a class="btn" id="msgLink" target="_blank" rel="noopener">Message us</a></div>
+        <div class="row"><div><div class="k">Facebook page</div><div class="v">Wildloom</div></div><a class="btn ghost" id="fbLink" target="_blank" rel="noopener">Open page</a></div>
+        <div class="row"><div><div class="k">Email</div><div class="v" id="emailTxt"></div></div><button class="mini" data-copy="email">Copy</button></div>
+        <div class="row"><div><div class="k">Location</div><div class="v">Comilla, Bangladesh</div></div></div>
+      </div>
+    </div>
+  </section>
+
+  <footer><span>© 2026 Wildloom. All rights reserved.</span><span>Clothing for everyone, priced fairly.</span></footer>
+</main>
+
+<div id="layer"></div>
+<div id="toast" class="toast" hidden></div>
+
+<script>
+/* ===== Edit these: your contact details, delivery charges and products ===== */
+const CONFIG = {
+  messenger: 'https://m.me/61576666223858',
+  facebook: 'https://www.facebook.com/profile.php?id=61576666223858',
+  email: 'salmanbusiness.abir@gmail.com',
+  homeCity: 'Comilla', shipHome: 60, shipOther: 120, freeOver: 3000,
+  /* Your bKash / Nagad MERCHANT numbers. Leave '' to hide that payment method. */
+  pay: { bkash: '01638725552', nagad: '01638725552' }
+};
+/* Sample products and prices. Replace with your real items. type: tee, hoodie, jacket, sweater, scarf, pants, kurti */
+const PRODUCTS = [
+  {id:'w1',name:'Fleece Hoodie',cat:'men',winter:true,type:'hoodie',price:1290,was:1590,color:'#5B6B3E',sizes:['M','L','XL','XXL'],desc:'Soft brushed fleece with a roomy kangaroo pocket.'},
+  {id:'w2',name:'Quilted Puffer Jacket',cat:'men',winter:true,type:'jacket',price:2450,color:'#2F3A4A',sizes:['M','L','XL','XXL'],desc:'Light quilted fill, warm without the bulk.'},
+  {id:'w3',name:'Ribbed Knit Sweater',cat:'women',winter:true,type:'sweater',price:1490,color:'#B0714F',sizes:['S','M','L','XL'],desc:'Chunky rib knit with a relaxed fit.'},
+  {id:'w4',name:'Winter Shawl',cat:'women',winter:true,type:'scarf',price:890,was:1090,color:'#7A3F4B',sizes:['Free size'],desc:'Wide, soft-woven shawl for cold evenings.'},
+  {id:'w5',name:'Zip Fleece Jacket',cat:'women',winter:true,type:'jacket',price:1790,color:'#8C7B5A',sizes:['S','M','L','XL'],desc:'Full-zip fleece with a stand-up collar.'},
+  {id:'w6',name:'Wool-Blend Muffler',cat:'men',winter:true,type:'scarf',price:590,color:'#4A5A66',sizes:['Free size'],desc:'Long muffler with finished fringe ends.'},
+  {id:'e1',name:'Classic Cotton Tee',cat:'men',winter:false,type:'tee',price:490,color:'#D9CFAE',sizes:['S','M','L','XL','XXL'],desc:'Everyday 100% cotton crew neck.'},
+  {id:'e2',name:'Relaxed Joggers',cat:'men',winter:false,type:'pants',price:990,color:'#3E4636',sizes:['M','L','XL','XXL'],desc:'Easy drawcord waist, tapered leg.'},
+  {id:'e3',name:'Printed Cotton Kurti',cat:'women',winter:false,type:'kurti',price:1190,was:1390,color:'#C98B5C',sizes:['S','M','L','XL'],desc:'Light cotton kurti with a straight cut.'},
+  {id:'e4',name:'Oversized Graphic Tee',cat:'women',winter:false,type:'tee',price:590,color:'#A8B58A',sizes:['S','M','L','XL'],desc:'Dropped shoulders, soft combed cotton.'}
+];
+
+const $ = s => document.querySelector(s);
+const tk = n => '৳' + n.toLocaleString('en-US');
+const PATHS = {
+  tee:'M62 42 L90 32 Q100 48 110 32 L138 42 L176 74 L156 98 L140 88 L140 192 L60 192 L60 88 L44 98 L24 74 Z',
+  hoodie:'M64 52 L88 42 Q100 62 112 42 L136 52 L182 150 L160 162 L140 112 L140 196 L60 196 L60 112 L40 162 L18 150 Z',
+  jacket:'M64 50 L88 40 Q100 56 112 40 L136 50 L184 152 L162 164 L140 114 L140 198 L60 198 L60 114 L38 164 L16 152 Z',
+  sweater:'M64 50 L88 40 Q100 58 112 40 L136 50 L182 150 L160 162 L140 112 L140 196 L60 196 L60 112 L40 162 L18 150 Z',
+  scarf:'M66 28 H134 V118 L126 192 H74 L66 118 Z',
+  pants:'M64 30 H136 L146 198 H106 L100 92 L94 198 H54 Z',
+  kurti:'M70 36 L90 28 Q100 42 110 28 L130 36 L152 74 L136 84 L134 208 L66 208 L64 84 L48 74 Z'
+};
+function art(type,color){
+  const S='stroke="rgba(0,0,0,.35)" stroke-width="1.5" stroke-linejoin="round"';
+  const D='fill="none" stroke="rgba(255,255,255,.45)" stroke-width="1.5" stroke-linecap="round"';
+  let x='';
+  if(type==='hoodie') x=`<path d="M78 42 Q100 4 122 42 Q100 64 78 42Z" fill="${color}" ${S}/><path d="M86 118 H114 L118 150 H82Z" ${D}/><path d="M94 60 V86 M106 60 V86" ${D}/>`;
+  if(type==='jacket') x=`<path d="M100 44 V198" ${D}/><path d="M80 44 L100 64 L120 44" ${D}/><path d="M60 98 H140 M60 134 H140 M60 168 H140" ${D} stroke-dasharray="3 5"/>`;
+  if(type==='sweater') x=`<path d="M60 184 H140 M60 176 H140" ${D}/><path d="M82 70 V170 M92 70 V170 M108 70 V170 M118 70 V170" ${D} opacity=".55"/><path d="M84 42 Q100 58 116 42" ${D}/>`;
+  if(type==='scarf') x=`<path d="M74 192 V206 M84 192 V208 M94 192 V206 M104 192 V208 M114 192 V206 M124 192 V208" stroke="${color}" stroke-width="3" stroke-linecap="round"/><path d="M80 52 H120 M78 76 H122" ${D}/>`;
+  if(type==='tee') x=`<path d="M90 32 Q100 46 110 32" ${D}/>`;
+  if(type==='pants') x=`<path d="M64 46 H136" ${D}/><path d="M92 30 V52 M108 30 V52" ${D}/>`;
+  if(type==='kurti') x=`<path d="M90 28 Q100 44 110 28" ${D}/><path d="M100 44 V100" ${D}/><path d="M66 190 H134" ${D}/>`;
+  return `<svg viewBox="0 0 200 220" aria-hidden="true"><path d="${PATHS[type]}" fill="${color}" ${S}/>${x}</svg>`;
+}
+
+let filter='all', sort='featured', cart=[], view='cart', lastOrder='', orderId='';
+try{ cart = JSON.parse(localStorage.getItem('wl_cart')||'[]').filter(i=>PRODUCTS.some(p=>p.id===i.id)); }catch(e){ cart=[]; }
+const save = () => { try{ localStorage.setItem('wl_cart',JSON.stringify(cart)); }catch(e){} };
+
+function toast(msg){
+  const t=$('#toast'); t.textContent=msg; t.hidden=false;
+  clearTimeout(toast.h); toast.h=setTimeout(()=>{t.hidden=true},2200);
+}
+
+function renderGrid(){
+  let list = PRODUCTS.filter(p => filter==='all' || (filter==='winter'?p.winter:p.cat===filter));
+  if(sort==='low') list=[...list].sort((a,b)=>a.price-b.price);
+  if(sort==='high') list=[...list].sort((a,b)=>b.price-a.price);
+  $('#grid').innerHTML = list.length ? list.map(p=>`
+    <article class="card">
+      <div class="art">${art(p.type,p.color)}${p.was?'<span class="badge sale">SALE</span>':p.winter?'<span class="badge">WINTER</span>':''}</div>
+      <div class="body">
+        <h3>${p.name}</h3><p class="desc">${p.desc}</p>
+        <div class="price">${tk(p.price)}${p.was?`<s>${tk(p.was)}</s>`:''}</div>
+        <div class="buy">
+          <select id="size-${p.id}" aria-label="Size for ${p.name}">${p.sizes.map(s=>`<option>${s}</option>`).join('')}</select>
+          <button class="btn" data-add="${p.id}">Add to cart</button>
+        </div>
+      </div>
+    </article>`).join('') : '<p class="empty">No products in this group yet.</p>';
+}
+
+function renderFeatured(){
+  $('#heroArt').insertAdjacentHTML('afterbegin', art('jacket','#4F5A33'));
+  $('#winterList').innerHTML = PRODUCTS.filter(p=>p.winter).slice(0,4).map(p=>`<li><span>${p.name}</span><strong>${tk(p.price)}</strong></li>`).join('');
+}
+
+function count(){ const n=cart.reduce((a,i)=>a+i.qty,0); $('#cartCount').textContent=n; return n; }
+const subtotal = () => cart.reduce((a,i)=>a+i.qty*PRODUCTS.find(p=>p.id===i.id).price,0);
+
+function add(id){
+  const size=$('#size-'+id).value;
+  const ex=cart.find(i=>i.id===id&&i.size===size);
+  ex?ex.qty++:cart.push({id,size,qty:1});
+  save(); count(); toast('Added to cart');
+}
+
+function methods(){ const m=['Cash on delivery']; if(CONFIG.pay.bkash) m.push('bKash'); if(CONFIG.pay.nagad) m.push('Nagad'); return m; }
+const payRadios=()=>methods().map((m,i)=>`<label><input type="radio" name="pay" value="${m}"${i?'':' checked'}> ${m==='Cash on delivery'?m:m+' (merchant pay)'}</label>`).join('');
+function openDrawer(v){ view=v||'cart'; drawer(); }
+function closeDrawer(){ $('#layer').innerHTML=''; document.body.style.overflow=''; }
+
+function drawer(){
+  document.body.style.overflow='hidden';
+  let head='Your cart', body='', foot='';
+  if(view==='cart'){
+    if(!cart.length){ body='<p class="empty">Your cart is empty.<br>Add something you like from the collection.</p>'; }
+    else{
+      body = cart.map((i,ix)=>{ const p=PRODUCTS.find(q=>q.id===i.id); return `
+        <div class="line"><div class="th">${art(p.type,p.color)}</div>
+          <div><strong>${p.name}</strong><small>Size ${i.size} · ${tk(p.price)}</small>
+            <div class="qty"><button data-dec="${ix}" aria-label="Decrease">−</button><span>${i.qty}</span><button data-inc="${ix}" aria-label="Increase">+</button></div></div>
+          <div><strong>${tk(p.price*i.qty)}</strong><br><button class="mini" data-rm="${ix}" style="margin-top:6px">Remove</button></div></div>`; }).join('');
+      foot = `<div class="sum total"><span>Subtotal</span><span>${tk(subtotal())}</span></div>
+        <small style="color:var(--muted)">Delivery charge is added at checkout.</small>
+        <button class="btn" data-go="checkout">Continue to checkout</button>`;
+    }
+  }
+  if(view==='checkout'){
+    head='Delivery details';
+    if(!orderId) orderId='WL-'+Date.now().toString(36).toUpperCase().slice(-6);
+    body = `<form id="orderForm" novalidate>
+      <div class="f"><label for="fName">Full name</label><input id="fName" required autocomplete="name"></div>
+      <div class="f"><label for="fPhone">Phone number</label><input id="fPhone" required inputmode="tel" autocomplete="tel" placeholder="01XXXXXXXXX"></div>
+      <div class="f"><label for="fCity">District / city</label><input id="fCity" required value="${CONFIG.homeCity}"></div>
+      <div class="f"><label for="fAddr">Full address</label><textarea id="fAddr" required placeholder="House, road, area"></textarea></div>
+      <div class="f"><label>Payment</label><div class="pay">${payRadios()}</div></div>
+      <div id="payBox"></div>
+      <div class="f"><label for="fNote">Note (optional)</label><textarea id="fNote"></textarea></div>
+      <p class="note" id="err" hidden></p></form>`;
+    foot = `<div id="totals"></div><button class="btn" id="placeBtn">Prepare my order</button><button class="btn ghost" data-go="cart">Back to cart</button>`;
+  }
+  if(view==='done'){
+    head='Send your order';
+    body = `<p class="note"><strong>Your order is not sent yet.</strong> Tap Copy, then send it to Wildloom on Messenger. We will reply to confirm. If you paid by bKash or Nagad, we confirm once we verify your payment.</p>
+      <pre class="order" id="orderTxt"></pre>`;
+    foot = `<button class="btn" id="copyOrder">Copy order details</button>
+      <a class="btn ghost" href="${CONFIG.messenger}" target="_blank" rel="noopener">Open Messenger</a>
+      <small style="color:var(--muted)">Or email it to ${CONFIG.email}</small>`;
+  }
+  $('#layer').innerHTML = `<div class="scrim" data-close></div>
+    <aside class="drawer" role="dialog" aria-modal="true" aria-label="${head}">
+      <div class="d-head"><h3>${head}</h3><button class="x" data-close aria-label="Close">×</button></div>
+      <div class="d-body">${body}</div>${foot?`<div class="d-foot">${foot}</div>`:''}</aside>`;
+  if(view==='checkout'){
+    updateTotals(); renderPayBox();
+    $('#fCity').addEventListener('input',updateTotals);
+    $('#orderForm').addEventListener('change',e=>{ if(e.target.name==='pay') renderPayBox(); });
+  }
+  if(view==='done') $('#orderTxt').textContent=lastOrder;
+}
+
+function shipping(){
+  const city=($('#fCity')?.value||'').trim().toLowerCase();
+  const sub=subtotal();
+  if(sub>=CONFIG.freeOver) return 0;
+  return (city===''||city===CONFIG.homeCity.toLowerCase()||city==='cumilla') ? CONFIG.shipHome : CONFIG.shipOther;
+}
+function updateTotals(){
+  const s=subtotal(), d=shipping();
+  $('#totals').innerHTML = `<div class="sum"><span>Subtotal</span><span>${tk(s)}</span></div>
+    <div class="sum"><span>Delivery</span><span>${d?tk(d):'Free'}</span></div>
+    <div class="sum total"><span>Total</span><span>${tk(s+d)}</span></div>`;
+  const pa=$('#payAmt'); if(pa) pa.textContent=tk(s+d);
+}
+
+function renderPayBox(){
+  const box=$('#payBox'); if(!box) return;
+  const m=document.querySelector('input[name=pay]:checked').value;
+  if(m==='Cash on delivery'){ box.innerHTML=''; return; }
+  const num = m==='bKash' ? CONFIG.pay.bkash : CONFIG.pay.nagad;
+  const how = m==='bKash' ? 'Open the bKash app, choose Payment, and enter this merchant number.' : 'Open the Nagad app, choose Merchant Pay, and enter this merchant number.';
+  box.innerHTML = `<div class="note"><strong>Pay <span id="payAmt">${tk(subtotal()+shipping())}</span> with ${m}</strong><br>${how}<br>
+    Merchant number: <b>${num}</b> <button type="button" class="mini" data-copynum="${num}">Copy</button><br>
+    Reference (if asked): <b>${orderId}</b></div>
+    <div class="f" style="margin-top:12px"><label for="fSender">Number you paid from</label><input id="fSender" inputmode="tel" placeholder="01XXXXXXXXX"></div>
+    <div class="f"><label for="fTrx">Transaction ID (TrxID)</label><input id="fTrx" autocapitalize="characters" autocomplete="off" placeholder="From your payment confirmation SMS"></div>`;
+}
+
+function buildOrder(){
+  const id=orderId;
+  const s=subtotal(), d=shipping();
+  const lines=cart.map(i=>{const p=PRODUCTS.find(q=>q.id===i.id);return `• ${p.name} | Size ${i.size} | Qty ${i.qty} | ${tk(p.price*i.qty)}`;}).join('\n');
+  const pay=document.querySelector('input[name=pay]:checked').value;
+  const payLine = pay==='Cash on delivery'
+    ? `Payment: Cash on delivery (pay ${tk(s+d)} on delivery)`
+    : `Payment: ${pay} merchant pay, ${tk(s+d)}\nPaid from: ${$('#fSender').value.trim()}\nTrxID: ${$('#fTrx').value.trim().toUpperCase()}\n(Awaiting payment verification)`;
+  const note=$('#fNote').value.trim();
+  return `NEW ORDER ${id}\n\n${lines}\n\nSubtotal: ${tk(s)}\nDelivery: ${d?tk(d):'Free'}\nTotal: ${tk(s+d)}\n${payLine}\n\nName: ${$('#fName').value.trim()}\nPhone: ${$('#fPhone').value.trim()}\nAddress: ${$('#fAddr').value.trim()}, ${$('#fCity').value.trim()}${note?'\nNote: '+note:''}`;
+}
+
+async function copyText(text,okMsg){
+  try{ await navigator.clipboard.writeText(text); toast(okMsg); }
+  catch(e){
+    const el=$('#orderTxt'); if(el){ const r=document.createRange(); r.selectNodeContents(el); const sel=getSelection(); sel.removeAllRanges(); sel.addRange(r); }
+    toast('Select the text and copy it');
+  }
+}
+
+document.addEventListener('click',e=>{
+  const t=e.target.closest('button,a,[data-close]'); if(!t) return;
+  if(t.dataset.add) return add(t.dataset.add);
+  if(t.dataset.f){ filter=t.dataset.f; document.querySelectorAll('.chip').forEach(c=>c.setAttribute('aria-pressed',c===t)); return renderGrid(); }
+  if(t.id==='openCart') return openDrawer('cart');
+  if(t.id==='seeWinter'){ filter='winter'; document.querySelectorAll('.chip').forEach(c=>c.setAttribute('aria-pressed',c.dataset.f==='winter')); renderGrid(); return $('#shop').scrollIntoView({behavior:'smooth'}); }
+  if(t.hasAttribute('data-close')) return closeDrawer();
+  if(t.dataset.inc!==undefined){ cart[t.dataset.inc].qty++; save(); count(); return drawer(); }
+  if(t.dataset.dec!==undefined){ const i=cart[t.dataset.dec]; i.qty--; if(i.qty<1) cart.splice(t.dataset.dec,1); save(); count(); return drawer(); }
+  if(t.dataset.rm!==undefined){ cart.splice(t.dataset.rm,1); save(); count(); return drawer(); }
+  if(t.dataset.go){ view=t.dataset.go; return drawer(); }
+  if(t.dataset.copynum) return copyText(t.dataset.copynum,'Number copied');
+  if(t.dataset.copy==='email') return copyText(CONFIG.email,'Email copied');
+  if(t.id==='copyOrder') return copyText(lastOrder,'Order copied. Now paste it in Messenger');
+  if(t.id==='placeBtn'){
+    const req=['#fName','#fPhone','#fCity','#fAddr'].map($);
+    const bad=req.find(el=>!el.value.trim());
+    const phoneOk=/^(\+?88)?01\d{9}$/.test($('#fPhone').value.replace(/[\s-]/g,''));
+    const err=$('#err');
+    const pm=document.querySelector('input[name=pay]:checked').value;
+    if(pm!=='Cash on delivery' && !bad && phoneOk){
+      const sOk=/^(\+?88)?01\d{9}$/.test($('#fSender').value.replace(/[\s-]/g,''));
+      const tOk=/^[A-Za-z0-9]{6,}$/.test($('#fTrx').value.trim());
+      if(!sOk||!tOk){ err.hidden=false; err.textContent=!sOk?'Enter the mobile number you paid from.':'Enter the Transaction ID (TrxID) from your payment confirmation.'; (!sOk?$('#fSender'):$('#fTrx')).focus(); return; }
+    }
+    if(bad||!phoneOk){ err.hidden=false; err.textContent = bad ? 'Please fill in your name, phone, city and address.' : 'Enter a valid Bangladeshi mobile number, like 01712345678.'; (bad||$('#fPhone')).focus(); return; }
+    lastOrder=buildOrder(); orderId=''; cart=[]; save(); count(); view='done'; return drawer();
+  }
+});
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeDrawer(); });
+$('#sort').addEventListener('change',e=>{ sort=e.target.value; renderGrid(); });
+$('#msgLink').href=CONFIG.messenger; $('#fbLink').href=CONFIG.facebook; $('#emailTxt').textContent=CONFIG.email;
+
+renderFeatured(); renderGrid(); count();
+</script>
+
+</body>
+</html>

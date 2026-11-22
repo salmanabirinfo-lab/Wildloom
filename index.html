@@ -82,6 +82,7 @@ select.sort{border:1.5px solid var(--line);background:var(--surface);border-radi
 .card{background:var(--surface);border:1px solid var(--line);border-radius:20px;overflow:hidden;display:flex;flex-direction:column;min-width:0}
 .card .art{background:var(--accent-soft);aspect-ratio:1/1.05;display:grid;place-items:center;position:relative}
 .card .art svg{width:74%;height:auto}
+.card .art img,.line .th img{width:100%;height:100%;object-fit:cover;display:block}
 .badge{position:absolute;top:12px;left:12px;background:var(--bg);border-radius:999px;padding:.2rem .65rem;font-size:.76rem;font-weight:700;letter-spacing:.04em}
 .badge.sale{background:var(--sale);color:#fff}
 .card .body{padding:16px;display:flex;flex-direction:column;gap:8px;flex:1}
@@ -132,6 +133,7 @@ footer{border-top:1px solid var(--line);padding-block:28px 40px;color:var(--mute
 .d-foot{border-top:1px solid var(--line);padding:16px 20px;display:grid;gap:10px}
 .line{display:grid;grid-template-columns:64px 1fr auto;gap:12px;align-items:center;padding-block:10px;border-bottom:1px solid var(--line)}
 .line .th{background:var(--accent-soft);border-radius:12px;aspect-ratio:1;display:grid;place-items:center}
+.line .th{overflow:hidden}
 .line .th svg{width:80%}
 .line small{color:var(--muted);display:block}
 .qty{display:inline-flex;align-items:center;border:1.5px solid var(--line);border-radius:999px;margin-top:6px}
@@ -257,8 +259,8 @@ const CONFIG = {
   /* Your bKash / Nagad MERCHANT numbers. Leave '' to hide that payment method. */
   pay: { bkash: '01638725552', nagad: '01638725552' }
 };
-/* Sample products and prices. Replace with your real items. type: tee, hoodie, jacket, sweater, scarf, pants, kurti */
-const PRODUCTS = [
+/* Fallback sample products. The live product list is in products.json and is managed from admin.html. */
+let PRODUCTS = [
   {id:'w1',name:'Fleece Hoodie',cat:'men',winter:true,type:'hoodie',price:1290,was:1590,color:'#5B6B3E',sizes:['M','L','XL','XXL'],desc:'Soft brushed fleece with a roomy kangaroo pocket.'},
   {id:'w2',name:'Quilted Puffer Jacket',cat:'men',winter:true,type:'jacket',price:2450,color:'#2F3A4A',sizes:['M','L','XL','XXL'],desc:'Light quilted fill, warm without the bulk.'},
   {id:'w3',name:'Ribbed Knit Sweater',cat:'women',winter:true,type:'sweater',price:1490,color:'#B0714F',sizes:['S','M','L','XL'],desc:'Chunky rib knit with a relaxed fit.'},
@@ -296,8 +298,10 @@ function art(type,color){
   return `<svg viewBox="0 0 200 220" aria-hidden="true"><path d="${PATHS[type]}" fill="${color}" ${S}/>${x}</svg>`;
 }
 
+const esc = s => String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const pic = p => p.img ? `<img src="${esc(p.img)}" alt="${esc(p.name)}" loading="lazy">` : art(p.type||'tee',p.color||'#8C8F6E');
 let filter='all', sort='featured', cart=[], view='cart', lastOrder='', orderId='';
-try{ cart = JSON.parse(localStorage.getItem('wl_cart')||'[]').filter(i=>PRODUCTS.some(p=>p.id===i.id)); }catch(e){ cart=[]; }
+try{ cart = JSON.parse(localStorage.getItem('wl_cart')||'[]'); if(!Array.isArray(cart)) cart=[]; }catch(e){ cart=[]; }
 const save = () => { try{ localStorage.setItem('wl_cart',JSON.stringify(cart)); }catch(e){} };
 
 function toast(msg){
@@ -311,13 +315,13 @@ function renderGrid(){
   if(sort==='high') list=[...list].sort((a,b)=>b.price-a.price);
   $('#grid').innerHTML = list.length ? list.map(p=>`
     <article class="card">
-      <div class="art">${art(p.type,p.color)}${p.was?'<span class="badge sale">SALE</span>':p.winter?'<span class="badge">WINTER</span>':''}</div>
+      <div class="art">${pic(p)}${p.was?'<span class="badge sale">SALE</span>':p.winter?'<span class="badge">WINTER</span>':''}</div>
       <div class="body">
-        <h3>${p.name}</h3><p class="desc">${p.desc}</p>
+        <h3>${esc(p.name)}</h3><p class="desc">${esc(p.desc||'')}</p>
         <div class="price">${tk(p.price)}${p.was?`<s>${tk(p.was)}</s>`:''}</div>
         <div class="buy">
-          <select id="size-${p.id}" aria-label="Size for ${p.name}">${p.sizes.map(s=>`<option>${s}</option>`).join('')}</select>
-          <button class="btn" data-add="${p.id}">Add to cart</button>
+          <select id="size-${esc(p.id)}" aria-label="Size for ${esc(p.name)}">${(p.sizes&&p.sizes.length?p.sizes:['Free size']).map(s=>`<option>${esc(s)}</option>`).join('')}</select>
+          <button class="btn" data-add="${esc(p.id)}"${p.soldOut?' disabled':''}>${p.soldOut?'Sold out':'Add to cart'}</button>
         </div>
       </div>
     </article>`).join('') : '<p class="empty">No products in this group yet.</p>';
@@ -325,11 +329,11 @@ function renderGrid(){
 
 function renderFeatured(){
   $('#heroArt').insertAdjacentHTML('afterbegin', art('jacket','#4F5A33'));
-  $('#winterList').innerHTML = PRODUCTS.filter(p=>p.winter).slice(0,4).map(p=>`<li><span>${p.name}</span><strong>${tk(p.price)}</strong></li>`).join('');
+  $('#winterList').innerHTML = PRODUCTS.filter(p=>p.winter).slice(0,4).map(p=>`<li><span>${esc(p.name)}</span><strong>${tk(p.price)}</strong></li>`).join('');
 }
 
 function count(){ const n=cart.reduce((a,i)=>a+i.qty,0); $('#cartCount').textContent=n; return n; }
-const subtotal = () => cart.reduce((a,i)=>a+i.qty*PRODUCTS.find(p=>p.id===i.id).price,0);
+const subtotal = () => cart.reduce((a,i)=>a+i.qty*((PRODUCTS.find(p=>p.id===i.id)||{price:0}).price),0);
 
 function add(id){
   const size=$('#size-'+id).value;
@@ -350,8 +354,8 @@ function drawer(){
     if(!cart.length){ body='<p class="empty">Your cart is empty.<br>Add something you like from the collection.</p>'; }
     else{
       body = cart.map((i,ix)=>{ const p=PRODUCTS.find(q=>q.id===i.id); return `
-        <div class="line"><div class="th">${art(p.type,p.color)}</div>
-          <div><strong>${p.name}</strong><small>Size ${i.size} · ${tk(p.price)}</small>
+        <div class="line"><div class="th">${pic(p)}</div>
+          <div><strong>${esc(p.name)}</strong><small>Size ${esc(i.size)} · ${tk(p.price)}</small>
             <div class="qty"><button data-dec="${ix}" aria-label="Decrease">−</button><span>${i.qty}</span><button data-inc="${ix}" aria-label="Increase">+</button></div></div>
           <div><strong>${tk(p.price*i.qty)}</strong><br><button class="mini" data-rm="${ix}" style="margin-top:6px">Remove</button></div></div>`; }).join('');
       foot = `<div class="sum total"><span>Subtotal</span><span>${tk(subtotal())}</span></div>
@@ -473,7 +477,16 @@ document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeDrawer(); });
 $('#sort').addEventListener('change',e=>{ sort=e.target.value; renderGrid(); });
 $('#msgLink').href=CONFIG.messenger; $('#fbLink').href=CONFIG.facebook; $('#emailTxt').textContent=CONFIG.email;
 
-renderFeatured(); renderGrid(); count();
+/* Products come from products.json (edited by admin.html). The list above is only a fallback if that file cannot be loaded. */
+function start(){
+  cart = cart.filter(i=>PRODUCTS.some(p=>p.id===i.id)); save();
+  renderFeatured(); renderGrid(); count();
+}
+fetch('products.json',{cache:'no-store'})
+  .then(r=>{ if(!r.ok) throw new Error('no products.json'); return r.json(); })
+  .then(d=>{ if(Array.isArray(d)) PRODUCTS=d; })
+  .catch(()=>{})
+  .then(start);
 </script>
 
 </body>

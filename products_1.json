@@ -1,0 +1,290 @@
+[
+  {
+    "id": "w1",
+    "name": "Fleece Hoodie",
+    "cat": "men",
+    "winter": true,
+    "type": "hoodie",
+    "price": 1290,
+    "was": 1590,
+    "color": "#5B6B3E",
+    "sizes": [
+      "M",
+      "L",
+      "XL",
+      "XXL"
+    ],
+    "desc": "Soft brushed fleece with a roomy kangaroo pocket."
+  },
+  {
+    "id": "w2",
+    "name": "Quilted Puffer Jacket",
+    "cat": "men",
+    "winter": true,
+    "type": "jacket",
+    "price": 2450,
+    "color": "#2F3A4A",
+    "sizes": [
+      "M",
+      "L",
+      "XL",
+      "XXL"
+    ],
+    "desc": "Light quilted fill, warm without the bulk."
+  },
+  {
+    "id": "w3",
+    "name": "Ribbed Knit Sweater",
+    "cat": "women",
+    "winter": true,
+    "type": "sweater",
+    "price": 1490,
+    "color": "#B0714F",
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "desc": "Chunky rib knit with a relaxed fit."
+  },
+  {
+    "id": "w4",
+    "name": "Winter Shawl",
+    "cat": "women",
+    "winter": true,
+    "type": "scarf",
+    "price": 890,
+    "was": 1090,
+    "color": "#7A3F4B",
+    "sizes": [
+      "Free size"
+    ],
+    "desc": "Wide, soft-woven shawl for cold evenings."
+  },
+  {
+    "id": "w5",
+    "name": "Zip Fleece Jacket",
+    "cat": "women",
+    "winter": true,
+    "type": "jacket",
+    "price": 1790,
+    "color": "#8C7B5A",
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "desc": "Full-zip fleece with a stand-up collar."
+  },
+  {
+    "id": "w6",
+    "name": "Wool-Blend Muffler",
+    "cat": "men",
+    "winter": true,
+    "type": "scarf",
+    "price": 590,
+    "color": "#4A5A66",
+    "sizes": [
+      "Free size"
+    ],
+    "desc": "Long muffler with finished fringe ends."
+  },
+  {
+    "id": "e1",
+    "name": "Classic Cotton Tee",
+    "cat": "men",
+    "winter": false,
+    "type": "tee",
+    "price": 490,
+    "color": "#D9CFAE",
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL",
+      "XXL"
+    ],
+    "desc": "Everyday 100% cotton crew neck."
+  },
+  {
+    "id": "e2",
+    "name": "Relaxed Joggers",
+    "cat": "men",
+    "winter": false,
+    "type": "pants",
+    "price": 990,
+    "color": "#3E4636",
+    "sizes": [
+      "M",
+      "L",
+      "XL",
+      "XXL"
+    ],
+    "desc": "Easy drawcord waist, tapered leg."
+  },
+  {
+    "id": "e3",
+    "name": "Printed Cotton Kurti",
+    "cat": "women",
+    "winter": false,
+    "type": "kurti",
+    "price": 1190,
+    "was": 1390,
+    "color": "#C98B5C",
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "desc": "Light cotton kurti with a straight cut."
+  },
+  {
+    "id": "j1",
+    "name": "Stripe Football Jersey",
+    "cat": "jersey",
+    "winter": false,
+    "type": "jersey",
+    "price": 890,
+    "was": 1090,
+    "color": "#2F6FA8",
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL",
+      "XXL"
+    ],
+    "desc": "Breathable dry-fit fabric, classic stripe design."
+  },
+  {
+    "id": "j2",
+    "name": "Retro Away Jersey",
+    "cat": "jersey",
+    "winter": false,
+    "type": "jersey",
+    "price": 990,
+    "color": "#B23A3A",
+    "sizes": [
+      "M",
+      "L",
+      "XL",
+      "XXL"
+    ],
+    "desc": "Retro-style football jersey with a soft collar."
+  },
+  {
+    "id": "j3",
+    "name": "Training Jersey",
+    "cat": "jersey",
+    "winter": false,
+    "type": "jersey",
+    "price": 790,
+    "color": "#2E7D5B",
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "desc": "Light and quick-drying, made for practice and match days."
+  },
+  {
+    "id": "m1",
+    "name": "Fleece Winter Joggers",
+    "cat": "men",
+    "winter": true,
+    "type": "pants",
+    "price": 1190,
+    "was": 1390,
+    "color": "#3A3F4A",
+    "sizes": [
+      "M",
+      "L",
+      "XL",
+      "XXL"
+    ],
+    "desc": "Warm fleece lining with a comfortable drawcord waist."
+  },
+  {
+    "id": "m2",
+    "name": "Cotton Polo Shirt",
+    "cat": "men",
+    "winter": false,
+    "type": "tee",
+    "price": 690,
+    "color": "#6B7F9E",
+    "sizes": [
+      "M",
+      "L",
+      "XL",
+      "XXL"
+    ],
+    "desc": "Smart casual polo in soft pique cotton."
+  },
+  {
+    "id": "m3",
+    "name": "Casual Cotton Shorts",
+    "cat": "men",
+    "winter": false,
+    "type": "shorts",
+    "price": 590,
+    "color": "#8A7B5C",
+    "sizes": [
+      "M",
+      "L",
+      "XL"
+    ],
+    "desc": "Easy everyday shorts with side pockets."
+  },
+  {
+    "id": "f1",
+    "name": "Straight Fit Joggers",
+    "cat": "women",
+    "winter": false,
+    "type": "pants",
+    "price": 990,
+    "color": "#6E5A6B",
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "desc": "Soft stretch cotton with a relaxed straight leg."
+  },
+  {
+    "id": "f2",
+    "name": "Cozy Knit Cardigan",
+    "cat": "women",
+    "winter": true,
+    "type": "sweater",
+    "price": 1590,
+    "color": "#A07A5A",
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "desc": "Chunky knit cardigan for chilly evenings."
+  },
+  {
+    "id": "e4",
+    "name": "Oversized Graphic Tee",
+    "cat": "women",
+    "winter": false,
+    "type": "tee",
+    "price": 590,
+    "color": "#A8B58A",
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "desc": "Dropped shoulders, soft combed cotton."
+  }
+]

@@ -1,0 +1,408 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Wildloom Admin</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:wght@600&family=Hanken+Grotesk:wght@400;500;600;700&display=swap">
+<style>
+:root{
+  --bg:#F5EEDC; --surface:#FBF7EC; --fg:#2B2F1E; --muted:#6C6F58; --line:#DDD3B8;
+  --accent:#4F5A33; --accent-fg:#F8F3E4; --accent-soft:#E4E3C6; --danger:#9A3A2E;
+  --font-display:'Newsreader',Georgia,serif; --font-body:'Hanken Grotesk',system-ui,-apple-system,'Segoe UI',sans-serif;
+}
+@media (prefers-color-scheme: dark){:root{
+  --bg:#1C2015; --surface:#252A1C; --fg:#F1EAD6; --muted:#A9AB92; --line:#3A4029;
+  --accent:#B5C27E; --accent-fg:#1C2015; --accent-soft:#33391F; --danger:#E58C7B; color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.5;padding-bottom:110px}
+.wrap{max-width:860px;margin:0 auto;padding-inline:16px}
+header.top{border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--bg);z-index:5}
+.bar{display:flex;justify-content:space-between;align-items:center;gap:12px;padding-block:12px}
+.brand{font-family:var(--font-display);font-size:1.35rem;letter-spacing:.04em}
+.brand span{font-family:var(--font-body);font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-left:6px}
+h1,h2{font-family:var(--font-display);margin:0}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.btn{border:1.5px solid var(--accent);background:var(--accent);color:var(--accent-fg);border-radius:999px;padding:.65rem 1.2rem;font-weight:600;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--fg);border-color:var(--line)}
+.btn[disabled]{opacity:.5;cursor:not-allowed}
+.mini{border:1.5px solid var(--line);background:transparent;border-radius:999px;padding:.3rem .85rem;font-size:.85rem;cursor:pointer}
+.mini.danger{color:var(--danger)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:22px;margin-top:24px}
+.f{display:grid;gap:5px;margin-bottom:14px}
+label{font-size:.85rem;font-weight:600}
+input[type=text],input[type=password],input[type=number],select,textarea{width:100%;border:1.5px solid var(--line);background:var(--bg);border-radius:12px;padding:.6rem .75rem}
+textarea{min-height:70px;resize:vertical}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:520px){.grid2{grid-template-columns:1fr}}
+.hint{color:var(--muted);font-size:.9rem;margin:6px 0 0}
+.msg{margin:10px 0 0;font-size:.9rem;font-weight:600}
+.msg.err{color:var(--danger)}
+details{margin-top:14px;font-size:.92rem}
+summary{cursor:pointer;font-weight:600}
+details ol{padding-left:20px;color:var(--muted)}
+.head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:26px;flex-wrap:wrap}
+.row{display:grid;grid-template-columns:64px 1fr auto;gap:10px 14px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:12px;margin-top:12px}
+.thumb{width:64px;height:64px;border-radius:12px;background:var(--accent-soft);display:grid;place-items:center;overflow:hidden;font-size:.7rem;color:var(--muted);text-align:center}
+.thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.info{min-width:0}
+.info strong{display:block;overflow-wrap:anywhere}
+.info small{color:var(--muted)}
+.price{display:flex;align-items:center;gap:6px;font-weight:700}
+.price input{width:110px}
+.sold{display:flex;align-items:center;gap:6px;font-weight:500}
+.acts{display:flex;gap:8px;justify-content:flex-end}
+.row .ctl{grid-column:1 / -1;display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;justify-content:space-between}
+.empty{color:var(--muted);text-align:center;padding:30px 0}
+.pubbar{position:fixed;left:0;right:0;bottom:0;background:var(--bg);border-top:1px solid var(--line);padding:12px 16px calc(12px + env(safe-area-inset-bottom,0px))}
+.pubbar .in{max-width:860px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:20;overflow:auto;padding:20px 12px}
+.overlay form{max-width:560px;margin:0 auto;background:var(--bg);border-radius:22px;padding:22px}
+.chk{display:flex;gap:8px;align-items:center;font-weight:500}
+.preview{width:140px;height:146px;border-radius:14px;background:var(--accent-soft);overflow:hidden;display:grid;place-items:center;font-size:.8rem;color:var(--muted);margin-top:8px}
+.preview img{width:100%;height:100%;object-fit:cover}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+
+<header class="top"><div class="wrap bar">
+  <div class="brand">WILDLOOM<span>Admin</span></div>
+  <div style="display:flex;gap:8px"><a class="mini" href="./" style="text-decoration:none;color:inherit">View website</a><button id="logout" class="mini" hidden>Sign out</button></div>
+</div></header>
+
+<main class="wrap">
+  <section id="login" class="card">
+    <h2 id="loginTitle">Sign in</h2>
+    <p class="hint" id="loginHint">Sign in with your username and password.</p>
+    <form id="loginForm" style="margin-top:16px">
+      <div class="f"><label for="fEmail">Username</label><input id="fEmail" type="text" required autocomplete="username" placeholder="e.g. wildloom" minlength="3"></div>
+      <div class="f"><label for="fPass">Password</label><input id="fPass" type="password" required autocomplete="current-password" minlength="8"></div>
+      <div id="setupOnly" hidden>
+        <p class="hint" style="margin:6px 0 12px">First-time setup on this device (done once). Choose your own username and password above, then paste your GitHub access token below. The token is locked with your password and stored only in this browser.</p>
+        <div class="grid2">
+          <div class="f"><label for="fOwner">GitHub username</label><input id="fOwner" type="text" autocomplete="off"></div>
+          <div class="f"><label for="fRepo">Repository name</label><input id="fRepo" type="text" autocomplete="off"></div>
+        </div>
+        <div class="f"><label for="fToken">GitHub access token</label><input id="fToken" type="password" autocomplete="off" placeholder="github_pat_..."></div>
+        <div class="f"><label for="fPass2">Repeat password</label><input id="fPass2" type="password" autocomplete="new-password" minlength="8"></div>
+      </div>
+      <p class="msg" id="loginMsg" role="status"></p>
+      <button class="btn" type="submit" id="loginBtn" style="margin-top:12px">Sign in</button>
+    </form>
+    <p class="hint" style="margin-top:14px"><a href="#" id="resetLink">Forgot password or new token? Set up again</a></p>
+    <details id="tokHelp">
+      <summary>How to get an access token (one time)</summary>
+      <ol>
+        <li>On GitHub, open your profile menu, then <b>Settings</b>.</li>
+        <li>Scroll down the left menu to <b>Developer settings</b>, then <b>Personal access tokens</b>, then <b>Fine-grained tokens</b>.</li>
+        <li>Press <b>Generate new token</b>. Give it a name like "Wildloom admin" and choose an expiry date.</li>
+        <li>Under <b>Repository access</b> choose <b>Only select repositories</b> and pick your Wildloom repository.</li>
+        <li>Under <b>Permissions</b>, open <b>Repository permissions</b>, find <b>Contents</b> and set it to <b>Read and write</b>.</li>
+        <li>Press <b>Generate token</b>, copy it, and paste it above. GitHub shows it only once. Never share it with anyone.</li>
+      </ol>
+    </details>
+  </section>
+
+  <section id="panel" hidden>
+    <div class="head"><h1>Products</h1><button class="btn" id="addBtn">+ Add product</button></div>
+    <p class="hint">Change a price or mark an item sold out right in the list. Use Edit for photos and details. Nothing goes live until you press <b>Publish changes</b>.</p>
+    <div id="list"></div>
+  </section>
+</main>
+
+<div class="pubbar" id="bar" hidden><div class="in">
+  <span id="status" role="status" class="msg" style="margin:0">No changes yet.</span>
+  <button class="btn" id="pub" disabled>Publish changes</button>
+</div></div>
+
+<div class="overlay" id="editor" hidden>
+  <form id="editForm" novalidate>
+    <h2 id="eTitle">Add product</h2>
+    <div class="f" style="margin-top:16px"><label for="eName">Product name</label><input id="eName" type="text" required></div>
+    <div class="grid2">
+      <div class="f"><label for="eCat">Category</label><select id="eCat"><option value="men">Men</option><option value="women">Women</option><option value="jersey">Jersey</option></select></div>
+      <div class="f"><label for="ePrice">Price (৳)</label><input id="ePrice" type="number" min="1" step="1" inputmode="numeric" required></div>
+    </div>
+    <div class="grid2">
+      <div class="f"><label for="eWas">Old price (৳, optional)</label><input id="eWas" type="number" min="0" step="1" inputmode="numeric"><p class="hint">Fill this for a discount. It shows the old price crossed out.</p></div>
+      <div class="f"><label for="eSizes">Sizes</label><input id="eSizes" type="text" placeholder="M, L, XL"><p class="hint">Separate with commas. Leave empty for Free size.</p></div>
+    </div>
+    <div class="f"><label for="eDesc">Short description</label><textarea id="eDesc"></textarea></div>
+    <div class="f" style="gap:10px"><label class="chk"><input id="eWinter" type="checkbox"> Part of the winter collection</label><label class="chk"><input id="eSummer" type="checkbox"> Part of the summer collection</label><label class="chk"><input id="eSold" type="checkbox"> Sold out</label></div>
+    <div class="f"><label for="ePhoto">Photo</label><input id="ePhoto" type="file" accept="image/*"><div class="preview" id="ePreview">No photo</div><p class="hint">A clear, well-lit photo works best. It is resized automatically.</p></div>
+    <p class="msg err" id="eMsg" role="alert"></p>
+    <div style="display:flex;gap:10px;margin-top:6px"><button class="btn" type="submit">Save product</button><button class="btn ghost" type="button" id="eCancel">Cancel</button></div>
+  </form>
+</div>
+
+<script>
+const $ = s => document.querySelector(s);
+const esc = s => String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const enc = encodeURIComponent;
+const LS = 'wl_admin';
+
+let cfg = null, products = [], sha = null, pending = {}, previews = {}, dirty = false, editing = -1, editImg = null;
+
+/* ---------- small helpers ---------- */
+function utf8ToB64(str){
+  const bytes = new TextEncoder().encode(str); let bin = '';
+  for(let i=0;i<bytes.length;i+=0x8000) bin += String.fromCharCode.apply(null, bytes.subarray(i,i+0x8000));
+  return btoa(bin);
+}
+function b64ToUtf8(b64){
+  const bin = atob(String(b64).replace(/\s/g,'')); const bytes = new Uint8Array(bin.length);
+  for(let i=0;i<bin.length;i++) bytes[i] = bin.charCodeAt(i);
+  return new TextDecoder().decode(bytes);
+}
+const getSaved = () => { try{ return JSON.parse(localStorage.getItem(LS)||'null'); }catch(e){ return null; } };
+const setSaved = c => { try{ localStorage.setItem(LS, JSON.stringify(c)); }catch(e){} };
+const clearSaved = () => { try{ localStorage.removeItem(LS); }catch(e){} };
+
+function friendly(err){
+  const s = err && err.status;
+  if(s===401) return 'The token was not accepted. Check that you copied all of it and that it has not expired.';
+  if(s===403) return 'The token does not have permission. It needs Contents: Read and write for this repository.';
+  if(s===404) return 'Not found. Check the username and repository name, and that products.json is uploaded to the repository.';
+  if(s===409 || s===422) return 'The product list was changed somewhere else. Reload this page, then make your changes again.';
+  return (err && err.message) ? err.message : 'Something went wrong. Check your internet and try again.';
+}
+
+async function gh(path, opts){
+  opts = opts || {};
+  const res = await fetch('https://api.github.com' + path, Object.assign({}, opts, {
+    cache: 'no-store',
+    headers: Object.assign({
+      'Accept': 'application/vnd.github+json',
+      'Authorization': 'Bearer ' + cfg.token,
+      'X-GitHub-Api-Version': '2022-11-28'
+    }, opts.headers || {})
+  }));
+  if(!res.ok){
+    let m = ''; try{ m = (await res.json()).message; }catch(e){}
+    const err = new Error(m || ('HTTP ' + res.status)); err.status = res.status; throw err;
+  }
+  return res.json();
+}
+const repoPath = () => `/repos/${enc(cfg.owner)}/${enc(cfg.repo)}/contents/`;
+const filePath = p => p.split('/').map(enc).join('/');
+
+/* ---------- load / publish ---------- */
+async function loadProducts(){
+  const f = await gh(repoPath() + 'products.json?ref=' + enc(cfg.branch));
+  const data = JSON.parse(b64ToUtf8(f.content));
+  if(!Array.isArray(data)) throw new Error('products.json is not a list of products.');
+  products = data; sha = f.sha; pending = {}; previews = {}; dirty = false;
+}
+
+async function publish(){
+  if(!dirty) return;
+  const btn = $('#pub'); btn.disabled = true; setStatus('Publishing...');
+  try{
+    for(const path of Object.keys(pending)){
+      if(!products.some(p => p.img === path)){ delete pending[path]; continue; }
+      await gh(repoPath() + filePath(path), { method:'PUT', body: JSON.stringify({ message:'Add product photo', content: pending[path], branch: cfg.branch }) });
+      delete pending[path];
+    }
+    const res = await gh(repoPath() + 'products.json', { method:'PUT', body: JSON.stringify({
+      message: 'Update products from admin', content: utf8ToB64(JSON.stringify(products, null, 2) + '\n'), sha: sha, branch: cfg.branch }) });
+    sha = res.content.sha; dirty = false;
+    setStatus('Published. The website updates in 1-2 minutes.');
+  }catch(err){
+    setStatus(friendly(err) + ' Your changes are still here, you can press Publish again.', true);
+  }
+  updateBar();
+}
+
+/* ---------- UI ---------- */
+function setStatus(t, bad){ const s = $('#status'); s.textContent = t; s.className = 'msg' + (bad ? ' err' : ''); }
+function updateBar(){ $('#pub').disabled = !dirty; }
+function markDirty(){ dirty = true; setStatus('You have changes that are not published yet.'); updateBar(); }
+
+function thumb(p){
+  const src = previews[p.img] || p.img;
+  return src ? `<img src="${esc(src)}" alt="">` : '<span>No photo</span>';
+}
+function render(){
+  const el = $('#list');
+  el.innerHTML = products.length ? products.map((p,i)=>`
+    <div class="row">
+      <div class="thumb">${thumb(p)}</div>
+      <div class="info"><strong>${esc(p.name)}</strong><small>${({men:'Men',women:'Women',jersey:'Jersey'})[p.cat]||'Men'}${p.winter?' · Winter':''}${p.summer?' · Summer':''}${p.was?' · On sale':''}</small></div>
+      <div class="acts"><button class="mini" data-edit="${i}">Edit</button><button class="mini danger" data-del="${i}">Delete</button></div>
+      <div class="ctl">
+        <label class="price">৳ <input type="number" min="0" step="1" inputmode="numeric" value="${Number(p.price)||0}" data-price="${i}" aria-label="Price of ${esc(p.name)}"></label>
+        <label class="sold"><input type="checkbox" data-sold="${i}"${p.soldOut?' checked':''}> Sold out</label>
+      </div>
+    </div>`).join('') : '<p class="empty">No products yet. Press "Add product".</p>';
+  $('#bar').hidden = false;
+}
+
+function showPanel(){
+  $('#login').hidden = true; $('#panel').hidden = false; $('#logout').hidden = false;
+  render(); updateBar();
+}
+function showLogin(msg){
+  $('#login').hidden = false; $('#panel').hidden = true; $('#logout').hidden = true; $('#bar').hidden = true;
+  $('#loginMsg').textContent = msg || ''; $('#loginMsg').className = 'msg err';
+}
+
+$('#list').addEventListener('input', e => {
+  const t = e.target;
+  if(t.dataset.price !== undefined){ products[+t.dataset.price].price = Math.max(0, Math.round(Number(t.value)||0)); markDirty(); }
+});
+$('#list').addEventListener('change', e => {
+  const t = e.target;
+  if(t.dataset.sold !== undefined){
+    const p = products[+t.dataset.sold]; if(t.checked) p.soldOut = true; else delete p.soldOut; markDirty();
+  }
+});
+$('#list').addEventListener('click', e => {
+  const b = e.target.closest('button'); if(!b) return;
+  if(b.dataset.edit !== undefined) openEditor(+b.dataset.edit);
+  if(b.dataset.del !== undefined){
+    const p = products[+b.dataset.del];
+    if(confirm('Delete "' + p.name + '"? It is removed from the website when you publish.')){ products.splice(+b.dataset.del, 1); render(); markDirty(); }
+  }
+});
+
+/* ---------- editor ---------- */
+function openEditor(i){
+  editing = i; editImg = null; $('#eMsg').textContent = '';
+  const p = i >= 0 ? products[i] : {};
+  $('#eTitle').textContent = i >= 0 ? 'Edit product' : 'Add product';
+  $('#eName').value = p.name || ''; $('#eCat').value = ['men','women','jersey'].includes(p.cat) ? p.cat : 'men';
+  $('#ePrice').value = p.price || ''; $('#eWas').value = p.was || '';
+  $('#eSizes').value = (p.sizes || []).join(', '); $('#eDesc').value = p.desc || '';
+  $('#eWinter').checked = !!p.winter; $('#eSummer').checked = !!p.summer; $('#eSold').checked = !!p.soldOut; $('#ePhoto').value = '';
+  const src = p.img ? (previews[p.img] || p.img) : '';
+  $('#ePreview').innerHTML = src ? `<img src="${esc(src)}" alt="">` : 'No photo';
+  $('#editor').hidden = false; $('#eName').focus();
+}
+function closeEditor(){ $('#editor').hidden = true; }
+$('#addBtn').addEventListener('click', () => openEditor(-1));
+$('#eCancel').addEventListener('click', closeEditor);
+
+/* Resize a photo in the browser so the website stays fast. Replaceable for tests. */
+window.wlResize = function(file){
+  return new Promise((resolve, reject) => {
+    const url = URL.createObjectURL(file), img = new Image();
+    img.onload = () => {
+      const max = 900; let w = img.naturalWidth, h = img.naturalHeight;
+      const k = Math.min(1, max / Math.max(w, h)); w = Math.round(w*k); h = Math.round(h*k);
+      const c = document.createElement('canvas'); c.width = w; c.height = h;
+      const x = c.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(0,0,w,h); x.drawImage(img,0,0,w,h);
+      const data = c.toDataURL('image/jpeg', 0.82); URL.revokeObjectURL(url);
+      resolve({ preview: data, b64: data.split(',')[1] });
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('Could not read this photo. Please use a JPG or PNG.')); };
+    img.src = url;
+  });
+};
+$('#ePhoto').addEventListener('change', async e => {
+  const f = e.target.files && e.target.files[0]; if(!f) return;
+  $('#eMsg').textContent = '';
+  try{
+    const r = await window.wlResize(f);
+    editImg = { path: 'images/p' + Date.now().toString(36) + '.jpg', b64: r.b64, preview: r.preview };
+    $('#ePreview').innerHTML = `<img src="${esc(r.preview)}" alt="">`;
+  }catch(err){ $('#eMsg').textContent = err.message; }
+});
+$('#editForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const name = $('#eName').value.trim(), price = Math.round(Number($('#ePrice').value));
+  if(!name){ $('#eMsg').textContent = 'Please enter the product name.'; return; }
+  if(!(price > 0)){ $('#eMsg').textContent = 'Please enter a price greater than 0.'; return; }
+  const p = editing >= 0 ? Object.assign({}, products[editing]) : { id: 'p' + Date.now().toString(36) };
+  const was = Math.round(Number($('#eWas').value)) || 0;
+  const sizes = $('#eSizes').value.split(',').map(s => s.trim()).filter(Boolean);
+  Object.assign(p, { name, cat: $('#eCat').value, winter: $('#eWinter').checked, summer: $('#eSummer').checked, price, sizes: sizes.length ? sizes : ['Free size'], desc: $('#eDesc').value.trim() });
+  if(was > price) p.was = was; else delete p.was;
+  if($('#eSold').checked) p.soldOut = true; else delete p.soldOut;
+  if(editImg){ pending[editImg.path] = editImg.b64; previews[editImg.path] = editImg.preview; p.img = editImg.path; }
+  if(editing >= 0) products[editing] = p; else products.push(p);
+  closeEditor(); render(); markDirty();
+});
+
+/* ---------- login ---------- */
+const LSV = 'wl_admin_vault';
+const vEnc = new TextEncoder();
+const toB64 = u8 => { let t=''; u8.forEach(x=>t+=String.fromCharCode(x)); return btoa(t); };
+const fromB64 = b => Uint8Array.from(atob(b), c=>c.charCodeAt(0));
+async function deriveKey(pass, salt){
+  const base = await crypto.subtle.importKey('raw', vEnc.encode(pass), 'PBKDF2', false, ['deriveKey']);
+  return crypto.subtle.deriveKey({name:'PBKDF2', salt, iterations:200000, hash:'SHA-256'}, base, {name:'AES-GCM', length:256}, false, ['encrypt','decrypt']);
+}
+async function lockVault(email, pass, data){
+  const salt = crypto.getRandomValues(new Uint8Array(16)), iv = crypto.getRandomValues(new Uint8Array(12));
+  const key = await deriveKey(email.toLowerCase()+'|'+pass, salt);
+  const ct = await crypto.subtle.encrypt({name:'AES-GCM', iv}, key, vEnc.encode(JSON.stringify(data)));
+  return {v:1, salt:toB64(salt), iv:toB64(iv), ct:toB64(new Uint8Array(ct))};
+}
+async function openVault(v, email, pass){
+  const key = await deriveKey(email.toLowerCase()+'|'+pass, fromB64(v.salt));
+  const pt = await crypto.subtle.decrypt({name:'AES-GCM', iv:fromB64(v.iv)}, key, fromB64(v.ct));
+  return JSON.parse(new TextDecoder().decode(pt));
+}
+const getVault = () => { try{ return JSON.parse(localStorage.getItem(LSV)||'null'); }catch(e){ return null; } };
+const setVault = v => { try{ localStorage.setItem(LSV, JSON.stringify(v)); }catch(e){} };
+let setupMode = false;
+function setMode(setup){
+  setupMode = setup;
+  $('#setupOnly').hidden = !setup; $('#tokHelp').hidden = !setup;
+  $('#resetLink').parentElement.hidden = setup;
+  $('#loginTitle').textContent = setup ? 'First-time setup' : 'Sign in';
+  $('#loginHint').textContent = setup ? 'Only you can change the website.' : 'Sign in with your username and password.';
+  $('#loginBtn').textContent = setup ? 'Save and sign in' : 'Sign in';
+  $('#fPass').autocomplete = setup ? 'new-password' : 'current-password';
+  ['fOwner','fRepo','fToken','fPass2'].forEach(id => $('#'+id).required = setup);
+}
+(function init(){
+  try{ localStorage.removeItem(LS); }catch(e){}
+  const m = location.hostname.match(/^([^.]+)\.github\.io$/), seg = location.pathname.split('/')[1];
+  $('#fOwner').value = m ? m[1] : 'salmanabirinfo-lab';
+  $('#fRepo').value = (m && seg && !/\./.test(seg)) ? seg : 'Wildloom';
+  const v = getVault();
+  setMode(!v);
+  if(v && v.email) $('#fEmail').value = v.email;
+})();
+$('#resetLink').addEventListener('click', e => {
+  e.preventDefault(); try{ localStorage.removeItem(LSV); }catch(x){}
+  $('#loginMsg').textContent=''; setMode(true);
+});
+$('#loginForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const email = $('#fEmail').value.trim(), pass = $('#fPass').value, msg = $('#loginMsg');
+  msg.className = 'msg'; msg.textContent = 'Signing in...';
+  if(!(window.crypto && crypto.subtle)){ msg.className='msg err'; msg.textContent='This browser cannot sign in securely. Please use an up-to-date Chrome.'; return; }
+  try{
+    if(setupMode){
+      if(pass.length < 8){ msg.className='msg err'; msg.textContent='Password must be at least 8 characters.'; return; }
+      if(pass !== $('#fPass2').value){ msg.className='msg err'; msg.textContent='The two passwords do not match.'; return; }
+      cfg = { owner: $('#fOwner').value.trim(), repo: $('#fRepo').value.trim(), branch: 'main', token: $('#fToken').value.trim() };
+      await loadProducts();
+      const v = await lockVault(email, pass, cfg); v.email = email.toLowerCase(); setVault(v);
+      $('#fToken').value = ''; $('#fPass').value = ''; $('#fPass2').value = ''; setMode(false);
+      showPanel();
+    } else {
+      const v = getVault();
+      if(!v || v.email !== email.toLowerCase()){ msg.className='msg err'; msg.textContent='Wrong email or password.'; return; }
+      try{ cfg = await openVault(v, email, pass); }catch(x){ cfg = null; msg.className='msg err'; msg.textContent='Wrong email or password.'; return; }
+      await loadProducts();
+      $('#fPass').value = ''; showPanel();
+    }
+  }catch(err){ cfg = null; showLogin(friendly(err)); }
+});
+$('#logout').addEventListener('click', () => {
+  if(dirty && !confirm('You have unpublished changes. Sign out anyway?')) return;
+  cfg = null; dirty = false; showLogin('');
+});
+$('#pub').addEventListener('click', publish);
+window.addEventListener('beforeunload', e => { if(dirty){ e.preventDefault(); e.returnValue = ''; } });
+
+
+</script>
+</body>
+</html>
